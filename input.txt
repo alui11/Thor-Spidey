@@ -1,0 +1,2 @@
+GET /script.cgi?q=monkeys HTTP/1.1
+Host: xavier.h4x0r.space:9898

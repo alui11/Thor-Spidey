@@ -1,0 +1,76 @@
+handler.c:    r->path = determine_request_path(r->uri);
+handler.c:    debug("HTTP REQUEST PATH: %s", r->path);
+handler.c:    switch(determine_request_type(r->path)){
+handler.c:    int nfiles = scandir(r->path, &entries, NULL, alphasort);
+handler.c:    fprintf(r->file, "HTTP/1.0 %s\r\nContent-Type: text/html\r\n\r\n", http_status_string(HTTP_STATUS_OK));
+handler.c:    fprintf(r->file, "<html><ul>");
+handler.c:        fprintf(r->file, "<li>%s</li>", entries[i]->d_name);
+handler.c:    fprintf(r->file, "</ul></html>");
+handler.c:    fflush(r->file);
+handler.c:    fs = fopen(r->path, "r");
+handler.c:    mimetype = determine_mimetype(r->path);
+handler.c:    fprintf(r->file, "HTTP/1.0 %s\r\nContent-Type: %s\r\n\r\n", http_status_string(HTTP_STATUS_OK), mimetype);
+handler.c:        fwrite(buffer, sizeof(char), nread, r->file);
+handler.c:    fflush(r->file);
+handler.c:    setenv("REQUEST_METHOD", r->method, 1);
+handler.c:    setenv("REQUEST_URI", r->uri, 1);
+handler.c:    setenv("QUERY_STRING", r->query, 1);
+handler.c:    setenv("REMOTE_PORT", r->port, 1);
+handler.c:    setenv("REMOTE_ADDR", r->host, 1);
+handler.c:    setenv("SCRIPT_FILENAME", r->path, 1);
+handler.c:    header = r->headers;
+handler.c:        if(streq(header->name, "Host")){
+handler.c:            setenv("HTTP_HOST", header->value, 1);
+handler.c:        }else if(streq(header->name, "User-Agent")){
+handler.c:            setenv("HTTP_USER_AGENT", header->value, 1);
+handler.c:        }else if(streq(header->name, "Accept")){
+handler.c:            setenv("HTTP_ACCEPT", header->value, 1);
+handler.c:        }else if(streq(header->name, "Accept-Language")){
+handler.c:            setenv("HTTP_ACCEPT_LANGUAGE", header->value, 1);
+handler.c:        }else if(streq(header->name, "Accept-Encoding")){
+handler.c:            setenv("HTTP_ACCEPT_ENCODING", header->value, 1);
+handler.c:        }else if(streq(header->name, "Connection")){
+handler.c:            setenv("HTTP_CONNECTION", header->value, 1);
+handler.c:        header = header->next;
+handler.c:    pfs = popen(r->path, "r");
+handler.c:        fputs(buffer, r->file);
+handler.c:    fflush(r->file);
+handler.c:    fprintf(r->file, "HTTP/1.0 %s\r\nContent-Type: text/html\r\n\r\n", status_string);
+handler.c:    fprintf(r->file, "<html>%s</html>", status_string);
+Binary file handler.o matches
+request.c:    r->fd = accept(sfd, &raddr, &rlen);
+request.c:    if(r->fd < 0) {
+request.c:    if(getnameinfo(&raddr, rlen, r->host, sizeof(r->host), r->port, sizeof(r->port), 0) < 0){
+request.c:    r->file = fdopen(r->fd, "w+");
+request.c:    if(r->file == NULL) {
+request.c:        close(r->fd);
+request.c:    log("Accepted request from %s:%s", r->host, r->port);
+request.c:    close(r->fd);
+request.c:    free(r->method);
+request.c:    free(r->uri);
+request.c:    if(r->query){
+request.c:        free(r->query);
+request.c:    curr = r->headers;
+request.c:        free(curr->name);
+request.c:        free(curr->value);
+request.c:        struct header *tmp = curr->next;
+request.c:    if(fgets(line, BUFSIZ, r->file) < 0){
+request.c:    r->method = strdup(method);
+request.c:    r->uri = strdup(uri);
+request.c:        r->query = strdup(query);
+request.c:        r->query = NULL;
+request.c:    debug("HTTP METHOD: %s", r->method);
+request.c:    debug("HTTP URI:    %s", r->uri);
+request.c:    debug("HTTP QUERY:  %s", r->query);
+request.c:    r->file = file;
+request.c:    printf("%s\n", r->host);
+request.c:    printf("%s\n", r->port);
+request.c: *  User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:29.0) Gecko/20100101 Firefox/29.0
+request.c:    while(fgets(buffer, BUFSIZ, r->file)  && streq(buffer, "\r\n")){
+request.c:        curr->name = strdup(name);
+request.c:        curr->value = strdup(value);
+request.c:        curr->next = r->headers;
+request.c:        r->headers = curr;
+request.c:    for (struct header *header = r->headers; header != NULL; header = header->next) {
+request.c:    	debug("HTTP HEADER %s = %s", header->name, header->value);
+Binary file spidey matches
